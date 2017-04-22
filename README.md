@@ -76,16 +76,11 @@ you should be able to figure it out for any other platform.
 
     mkdir Projects
     cd Projects
-
-Then follow along with the [INSTALL](https://github.com/pybites/challenges/blob/master/INSTALL.md)
-instructions provided by [PyBites](http://pybit.es/) to
-clone the challenges. Once cloned you can do the following:
-
-    cd challenges/15/clamytoe
+    git clone https://github.com/clamytoe/Task-Manager.git
     python3 -m venv venv
     source venv/bin/activate
     pip install -r requirements.txt
-    python app-clamytoe.py
+    python app.py
 
 Then simply open up a browser, Chrome/Chromium recommended,
 to [localhost:5000](http://localhost:5000/) and play around
