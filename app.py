@@ -229,6 +229,26 @@ def api_get_task(id):
         return jsonify({'error': 'Task not found'}), 404
     return jsonify({'id': task.task_id, 'project_id': task.project_id, 'task': task.task, 'status': task.status}), 200
 
+@app.route('/api/projects', methods=['POST'])
+def api_create_project():
+    data = request.get_json()
+    if not data or 'name' not in data:
+        return jsonify({'error': 'Project name is required'}), 400
+    project = Projects(data['name'], data.get('active', False))
+    db.session.add(project)
+    db.session.commit()
+    return jsonify({'message': 'Project created', 'id': project.project_id}), 201
+
+@app.route('/api/tasks', methods=['POST'])
+def api_create_task():
+    data = request.get_json()
+    if not data or 'task' not in data or 'project_id' not in data:
+        return jsonify({'error': 'Missing task or project_id'}), 400
+    task = Tasks(data['project_id'], data['task'], data.get('status', True))
+    db.session.add(task)
+    db.session.commit()
+    return jsonify({'message': 'Task created', 'id': task.task_id}), 201
+
 
 if __name__ == '__main__':
     app.run(debug=True)
