@@ -291,5 +291,17 @@ def api_delete_task(id):
     db.session.commit()
     return jsonify({'message': 'Task deleted'}), 200
 
+@app.route('/api/delete_all', methods=['DELETE'])
+def api_delete_all():
+    try:
+        Tasks.query.delete()
+        Projects.query.delete()
+        db.session.commit()
+        return jsonify({'message': 'All projects and tasks deleted'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': 'Failed to delete all records', 'details': str(e)}), 500
+
+
 if __name__ == '__main__':
     app.run(debug=True)
