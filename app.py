@@ -271,5 +271,25 @@ def api_update_task(id):
     db.session.commit()
     return jsonify({'message': 'Task updated'}), 200
 
+@app.route('/api/projects/<int:id>', methods=['DELETE'])
+def api_delete_project(id):
+    """DELETE a project"""
+    project = Projects.query.get(id)
+    if not project:
+        return jsonify({'error': 'Project not found'}), 404
+    db.session.delete(project)
+    db.session.commit()
+    return jsonify({'message': 'Project deleted'}), 200
+
+@app.route('/api/tasks/<int:id>', methods=['DELETE'])
+def api_delete_task(id):
+    """DELETE a task"""
+    task = Tasks.query.get(id)
+    if not task:
+        return jsonify({'error': 'Task not found'}), 404
+    db.session.delete(task)
+    db.session.commit()
+    return jsonify({'message': 'Task deleted'}), 200
+
 if __name__ == '__main__':
     app.run(debug=True)
