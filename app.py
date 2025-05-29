@@ -249,6 +249,27 @@ def api_create_task():
     db.session.commit()
     return jsonify({'message': 'Task created', 'id': task.task_id}), 201
 
+@app.route('/api/projects/<int:id>', methods=['PUT'])
+def api_update_project(id):
+    data = request.get_json()
+    project = Projects.query.get(id)
+    if not project:
+        return jsonify({'error': 'Project not found'}), 404
+    project.project_name = data.get('name', project.project_name)
+    project.active = data.get('active', project.active)
+    db.session.commit()
+    return jsonify({'message': 'Project updated'}), 200
+
+@app.route('/api/tasks/<int:id>', methods=['PUT'])
+def api_update_task(id):
+    data = request.get_json()
+    task = Tasks.query.get(id)
+    if not task:
+        return jsonify({'error': 'Task not found'}), 404
+    task.task = data.get('task', task.task)
+    task.status = data.get('status', task.status)
+    db.session.commit()
+    return jsonify({'message': 'Task updated'}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
