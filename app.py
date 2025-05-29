@@ -2,6 +2,7 @@ from flask import Flask, request
 from flask import render_template
 from flask import redirect
 from flask_sqlalchemy import SQLAlchemy
+from flask import jsonify
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ctm.db'
@@ -195,6 +196,38 @@ def tab_nav(tab):
 
     db.session.commit()
     return redirect('/')
+
+"I have added my new features below."
+
+@app.route('/api/projects', methods=['GET'])
+def api_get_projects():
+    projects = Projects.query.all()
+    return jsonify([
+        {'id': p.project_id, 'name': p.project_name, 'active': p.active}
+        for p in projects
+    ]), 200
+
+@app.route('/api/projects/<int:id>', methods=['GET'])
+def api_get_project(id):
+    project = Projects.query.get(id)
+    if not project:
+        return jsonify({'error': 'Project not found'}), 404
+    return jsonify({'id': project.project_id, 'name': project.project_name, 'active': project.active}), 200
+
+@app.route('/api/tasks', methods=['GET'])
+def api_get_tasks():
+    tasks = Tasks.query.all()
+    return jsonify([
+        {'id': t.task_id, 'project_id': t.project_id, 'task': t.task, 'status': t.status}
+        for t in tasks
+    ]), 200
+
+@app.route('/api/tasks/<int:id>', methods=['GET'])
+def api_get_task(id):
+    task = Tasks.query.get(id)
+    if not task:
+        return jsonify({'error': 'Task not found'}), 404
+    return jsonify({'id': task.task_id, 'project_id': task.project_id, 'task': task.task, 'status': task.status}), 200
 
 
 if __name__ == '__main__':
