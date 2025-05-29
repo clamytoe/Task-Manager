@@ -40,7 +40,8 @@ class Tasks(db.Model):
 
 
 # initialize the database
-db.create_all()
+with app.app_context():
+    db.create_all()
 
 
 @app.route('/')
