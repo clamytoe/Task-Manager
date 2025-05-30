@@ -1,5 +1,5 @@
 #Links
-  Video: 
+  Video: https://drive.google.com/file/d/1xxiQkPa1zuDXlYim_cQv0lNoopiwtGFZ/view?usp=sharing
   Swagger documentation: http://localhost:5000/apidocs/
 ##Steps:
   1. The changes are located in the REST_feature branch of this repository. Use: git checkout REST_feature
