@@ -3,11 +3,14 @@ from flask import render_template
 from flask import redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask import jsonify
+from flasgger import Swagger
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ctm.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
+
+swagger = Swagger(app)
 
 
 class Projects(db.Model):
@@ -201,6 +204,24 @@ def tab_nav(tab):
 
 @app.route('/api/projects', methods=['GET'])
 def api_get_projects():
+    """
+    Get all projects
+    ---
+    tags: [Projects]
+    responses:
+      200:
+        description: List of all projects
+        schema:
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+              name:
+                type: string
+              active:
+                type: boolean
+    """
     projects = Projects.query.all()
     return jsonify([
         {'id': p.project_id, 'name': p.project_name, 'active': p.active}
@@ -209,6 +230,21 @@ def api_get_projects():
 
 @app.route('/api/projects/<int:id>', methods=['GET'])
 def api_get_project(id):
+    """
+    Get project by ID
+    ---
+    tags: [Projects]
+    parameters:
+      - name: id
+        in: path
+        type: integer
+        required: true
+    responses:
+      200:
+        description: Project found
+      404:
+        description: Project not found
+    """
     project = Projects.query.get(id)
     if not project:
         return jsonify({'error': 'Project not found'}), 404
@@ -216,6 +252,14 @@ def api_get_project(id):
 
 @app.route('/api/tasks', methods=['GET'])
 def api_get_tasks():
+    """
+    Get all tasks
+    ---
+    tags: [Tasks]
+    responses:
+      200:
+        description: List of all tasks
+    """
     tasks = Tasks.query.all()
     return jsonify([
         {'id': t.task_id, 'project_id': t.project_id, 'task': t.task, 'status': t.status}
@@ -224,6 +268,21 @@ def api_get_tasks():
 
 @app.route('/api/tasks/<int:id>', methods=['GET'])
 def api_get_task(id):
+    """
+    Get task by ID
+    ---
+    tags: [Tasks]
+    parameters:
+      - name: id
+        in: path
+        type: integer
+        required: true
+    responses:
+      200:
+        description: Task found
+      404:
+        description: Task not found
+    """
     task = Tasks.query.get(id)
     if not task:
         return jsonify({'error': 'Task not found'}), 404
@@ -231,6 +290,25 @@ def api_get_task(id):
 
 @app.route('/api/projects', methods=['POST'])
 def api_create_project():
+    """
+    Create a new project
+    ---
+    tags: [Projects]
+    parameters:
+      - in: body
+        name: project
+        required: true
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            active:
+              type: boolean
+    responses:
+      201:
+        description: Project created
+    """
     data = request.get_json()
     if not data or 'name' not in data:
         return jsonify({'error': 'Project name is required'}), 400
@@ -241,6 +319,27 @@ def api_create_project():
 
 @app.route('/api/tasks', methods=['POST'])
 def api_create_task():
+    """
+    Create a new task
+    ---
+    tags: [Tasks]
+    parameters:
+      - in: body
+        name: task
+        required: true
+        schema:
+          type: object
+          properties:
+            project_id:
+              type: integer
+            task:
+              type: string
+            status:
+              type: boolean
+    responses:
+      201:
+        description: Task created
+    """
     data = request.get_json()
     if not data or 'task' not in data or 'project_id' not in data:
         return jsonify({'error': 'Missing task or project_id'}), 400
@@ -251,6 +350,29 @@ def api_create_task():
 
 @app.route('/api/projects/<int:id>', methods=['PUT'])
 def api_update_project(id):
+    """
+    Update a project
+    ---
+    tags: [Projects]
+    parameters:
+      - name: id
+        in: path
+        type: integer
+        required: true
+      - in: body
+        name: project
+        required: true
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            active:
+              type: boolean
+    responses:
+      200:
+        description: Project updated
+    """
     data = request.get_json()
     project = Projects.query.get(id)
     if not project:
@@ -262,6 +384,29 @@ def api_update_project(id):
 
 @app.route('/api/tasks/<int:id>', methods=['PUT'])
 def api_update_task(id):
+    """
+    Update a task
+    ---
+    tags: [Tasks]
+    parameters:
+      - name: id
+        in: path
+        type: integer
+        required: true
+      - in: body
+        name: task
+        required: true
+        schema:
+          type: object
+          properties:
+            task:
+              type: string
+            status:
+              type: boolean
+    responses:
+      200:
+        description: Task updated
+    """
     data = request.get_json()
     task = Tasks.query.get(id)
     if not task:
@@ -273,7 +418,21 @@ def api_update_task(id):
 
 @app.route('/api/projects/<int:id>', methods=['DELETE'])
 def api_delete_project(id):
-    """DELETE a project"""
+    """
+    Delete a project
+    ---
+    tags: [Projects]
+    parameters:
+      - name: id
+        in: path
+        type: integer
+        required: true
+    responses:
+      200:
+        description: Project deleted
+      404:
+        description: Project not found
+    """
     project = Projects.query.get(id)
     if not project:
         return jsonify({'error': 'Project not found'}), 404
@@ -283,7 +442,21 @@ def api_delete_project(id):
 
 @app.route('/api/tasks/<int:id>', methods=['DELETE'])
 def api_delete_task(id):
-    """DELETE a task"""
+    """
+    Delete a task
+    ---
+    tags: [Tasks]
+    parameters:
+      - name: id
+        in: path
+        type: integer
+        required: true
+    responses:
+      200:
+        description: Task deleted
+      404:
+        description: Task not found
+    """
     task = Tasks.query.get(id)
     if not task:
         return jsonify({'error': 'Task not found'}), 404
@@ -293,6 +466,16 @@ def api_delete_task(id):
 
 @app.route('/api/delete_all', methods=['DELETE'])
 def api_delete_all():
+    """
+    Delete all tasks and projects
+    ---
+    tags: [Admin]
+    responses:
+      200:
+        description: All records deleted
+      500:
+        description: Deletion failed
+    """
     try:
         Tasks.query.delete()
         Projects.query.delete()
