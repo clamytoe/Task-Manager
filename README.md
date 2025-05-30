@@ -1,6 +1,6 @@
-#Video
-  link: 
-
+#Links
+  Video: 
+  Swagger documentation: http://localhost:5000/apidocs/
 ##Steps:
   1. The changes are located in the REST_feature branch of this repository. Use: git checkout REST_feature
   2. Activate the installed libraries on the Dependencies_Environment folder using: cd/Dependencies_Environment/Scripts, then enter activate.
