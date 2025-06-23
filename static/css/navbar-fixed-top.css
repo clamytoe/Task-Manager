@@ -59,5 +59,15 @@ body {
   padding: 4px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  width: 100px;
+  width: 75%;
+}
+
+.edit-desc {
+  margin-left: 8px;
+  color: #666;
+  cursor: pointer;
+}
+
+.edit-desc:hover {
+  color: #000;
 }

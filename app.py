@@ -213,6 +213,18 @@ def rename_project(id):
     return 'Invalid name', 400
 
 
+@app.route('/rename_task_desc/<int:id>', methods=['POST'])
+def rename_task_desc(id):
+    data = request.get_json()
+    new_desc = data.get('new_desc', '').strip()
+    if new_desc:
+        task = Tasks.query.get_or_404(id)
+        task.task = new_desc
+        db.session.commit()
+        return '', 204
+    return 'Invalid description', 400
+
+
 # new features below."
 
 @app.route('/api/projects', methods=['GET'])
