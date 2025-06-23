@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flask import render_template
-from flask import redirect
+from flask import redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask import jsonify
 from flasgger import Swagger
@@ -200,7 +200,20 @@ def tab_nav(tab):
     db.session.commit()
     return redirect('/')
 
-"I have added my new features below."
+
+@app.route('/rename_project/<int:id>', methods=['POST'])
+def rename_project(id):
+    data = request.get_json()
+    new_name = data.get('new_name', '').strip()
+    if new_name:
+        project = Projects.query.get_or_404(id)
+        project.project_name = new_name
+        db.session.commit()
+        return '', 204
+    return 'Invalid name', 400
+
+
+# new features below."
 
 @app.route('/api/projects', methods=['GET'])
 def api_get_projects():

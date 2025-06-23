@@ -2,15 +2,62 @@ body {
   min-height: 2000px;
   padding-top: 70px;
 }
+
 .jumbotron {
   padding-top: 12px;
   padding-bottom: 72px;
 }
+
 #taskNav {
   padding-bottom: 0px;
   margin-bottom: 0px;
 }
+
 #taskPanel {
   padding-top: 0px;
   margin-top: 0px;
+}
+
+.tab-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tab-container a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: normal;
+  border: 1px solid transparent;
+  border-radius: 4px 4px 0 0;
+  text-decoration: none;
+  color: #333;
+}
+
+.tab-container a.active {
+  background-color: #f8f9fa;
+  border-color: #dee2e6 #dee2e6 transparent;
+  font-weight: bold;
+}
+
+.edit-inline {
+  font-size: 0.85em;
+  color: #666;
+  margin-left: 6px;
+}
+
+.edit-inline:hover {
+  color: #000;
+}
+
+.edit-input {
+  font-size: 14px;
+  padding: 4px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100px;
 }
