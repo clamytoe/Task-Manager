@@ -34,7 +34,7 @@ def test_rename_task_desc(app, client, make_task):
 
     with app.app_context():
         updated = db.session.get(Tasks, task.task_id)
-        assert updated.task == "Updated Task"
+        assert updated.task == "Updated Task"  # type: ignore
 
 
 def test_delete_task(app, client, make_task):
