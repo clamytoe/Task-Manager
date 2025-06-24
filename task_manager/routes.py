@@ -1,6 +1,7 @@
 from flask import Blueprint, redirect, render_template, request
 
-from .models import Projects, Tasks, db
+from task_manager import db
+from task_manager.models import Projects, Tasks
 
 routes = Blueprint("routes", __name__)
 

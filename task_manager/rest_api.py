@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 
-from .models import Projects, Tasks, db
+from task_manager import db
+from task_manager.models import Projects, Tasks
 
 rest_api_routes = Blueprint("routes", __name__)
 

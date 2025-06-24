@@ -1,4 +1,4 @@
-from task_manager.app import db
+from task_manager import db
 from task_manager.models import Tasks
 
 
