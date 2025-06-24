@@ -2,13 +2,6 @@ from task_manager import db
 from task_manager.models import Tasks
 
 
-def create_project(make_project):
-    project = make_project()
-    db.session.add(project)
-    db.session.commit()
-    return project.project_id
-
-
 def test_add_task(client, make_project):
     project = make_project(name="Urgent Stuff")
     response = client.post(
