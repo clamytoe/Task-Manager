@@ -13,3 +13,4 @@ cov-html:
 clean:
 	find . -type d -name "__pycache__" -exec rm -r {} + || true
 	rm -rf .pytest_cache .coverage htmlcov
+	clear
