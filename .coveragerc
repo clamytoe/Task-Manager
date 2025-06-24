@@ -1,0 +1,5 @@
+[run]
+source = task_manager
+omit =
+    */tests/*
+    */venv/*
