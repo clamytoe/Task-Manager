@@ -148,13 +148,13 @@ def remove_all(lists_id):
     return redirect("/")
 
 
-@routes.route("/project/<tab>")
-def tab_nav(tab):
+@routes.route("/project/<slug>")
+def tab_nav(slug):
     """Switches between active tabs"""
     projects = Projects.query.all()
 
     for project in projects:
-        if project.project_name == tab:
+        if project.url_slug == slug:
             project.active = True
         else:
             project.active = False

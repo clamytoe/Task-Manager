@@ -1,3 +1,5 @@
+from werkzeug.utils import secure_filename
+
 from task_manager import db
 from task_manager.models import Tasks
 
@@ -40,3 +42,11 @@ def test_delete_task(app, client, create_task):
     with app.app_context():
         deleted = db.session.get(Tasks, tid)
         assert deleted is None
+
+
+def test_project_slug_generation(app, create_project):
+    name = "UI/UX Polish"
+    expected_slug = secure_filename(name.lower())
+    project = create_project(name=name)
+
+    assert project.url_slug == expected_slug

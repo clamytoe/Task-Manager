@@ -1,3 +1,6 @@
+from sqlalchemy.orm import validates
+from werkzeug.utils import secure_filename
+
 from task_manager import db
 
 
@@ -7,10 +10,16 @@ class Projects(db.Model):
     project_id = db.Column(db.Integer, primary_key=True)
     project_name = db.Column(db.String(20))
     active = db.Column(db.Boolean)
+    url_slug = db.Column(db.String, unique=True)
 
     def __init__(self, project, active):
         self.project_name = project
         self.active = active
+
+    @validates("project_name")
+    def _generate_slug(self, _, name):
+        self.url_slug = secure_filename(name.lower())
+        return name
 
     def __repr__(self):
         return "<Project {}>".format(self.project_name)

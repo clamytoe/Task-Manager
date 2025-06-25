@@ -115,12 +115,12 @@
           <li role="presentation">
             <div class="tab-container">
               {% if tab.project_id == active %}
-              <a href="/project/{{ tab.project_name }}" class="active tab-link" data-project-id="{{ tab.project_id }}">
+              <a href="/project/{{ tab.url_slug }}" class="active tab-link" data-project-id="{{ tab.project_id }}">
                 <span class="project-name">{{ tab.project_name }}</span>
                 <i class="fas fa-pencil-alt edit-inline" title="Edit"></i>
               </a>
               {% else %}
-              <a href="/project/{{ tab.project_name }}">{{ tab.project_name }}</a>
+              <a href="/project/{{ tab.url_slug }}">{{ tab.project_name }}</a>
               {% endif %}
             </div>
           </li>
