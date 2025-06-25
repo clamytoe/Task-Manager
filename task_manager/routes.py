@@ -242,7 +242,7 @@ def api_get_project(id):
       404:
         description: Project not found
     """
-    project = Projects.query.get(id)
+    project = db.session.get(Projects, id)
     if not project:
         return jsonify({"error": "Project not found"}), 404
     return (
@@ -301,7 +301,7 @@ def api_get_task(id):
       404:
         description: Task not found
     """
-    task = Tasks.query.get(id)
+    task = db.session.get(Tasks, id)
     if not task:
         return jsonify({"error": "Task not found"}), 404
     return (
@@ -405,7 +405,7 @@ def api_update_project(id):
         description: Project updated
     """
     data = request.get_json()
-    project = Projects.query.get(id)
+    project = db.session.get(Projects, id)
     if not project:
         return jsonify({"error": "Project not found"}), 404
     project.project_name = data.get("name", project.project_name)
@@ -440,7 +440,7 @@ def api_update_task(id):
         description: Task updated
     """
     data = request.get_json()
-    task = Tasks.query.get(id)
+    task = db.session.get(Tasks, id)
     if not task:
         return jsonify({"error": "Task not found"}), 404
     task.task = data.get("task", task.task)
@@ -466,7 +466,7 @@ def api_delete_project(id):
       404:
         description: Project not found
     """
-    project = Projects.query.get(id)
+    project = db.session.get(Projects, id)
     if not project:
         return jsonify({"error": "Project not found"}), 404
     db.session.delete(project)
@@ -491,7 +491,7 @@ def api_delete_task(id):
       404:
         description: Task not found
     """
-    task = Tasks.query.get(id)
+    task = db.session.get(Tasks, id)
     if not task:
         return jsonify({"error": "Task not found"}), 404
     db.session.delete(task)
