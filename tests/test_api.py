@@ -9,7 +9,7 @@ def test_add_task(client, create_project):
     response = client.post(
         "/add",
         data={
-            "project": project.project_id,
+            "project_name": project.project_id,
             "task": "Finish tests",
             "status": 1,
         },

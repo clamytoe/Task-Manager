@@ -94,7 +94,7 @@ def test_add_task_new_project_created(client, app):
 
 def test_add_task_existing_project_used(client, app):
     # Pre-create a project with active=False
-    proj = Projects(project="Repeat", active=False)
+    proj = Projects(project_name="Repeat", active=False)
     db.session.add(proj)
     db.session.commit()
 

@@ -12,8 +12,8 @@ class Projects(db.Model):
     active = db.Column(db.Boolean)
     url_slug = db.Column(db.String, unique=True)
 
-    def __init__(self, project, active):
-        self.project_name = project
+    def __init__(self, project_name, active):
+        self.project_name = project_name
         self.active = active
 
     @validates("project_name")

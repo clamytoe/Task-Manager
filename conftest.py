@@ -43,7 +43,7 @@ def client(app):
 @pytest.fixture
 def create_project():
     def _create_project(name="Test Project", active=True):
-        project = Projects(project=name, active=active)
+        project = Projects(project_name=name, active=active)
         db.session.add(project)
         db.session.commit()
         return project
