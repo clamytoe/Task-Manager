@@ -210,7 +210,7 @@ def test_tab_nav_switches_active_project(client, create_project, app):
     p1 = create_project("Alpha", active=False)
     p2 = create_project("Beta", active=False)
 
-    response = client.get(f"/project/Beta")
+    response = client.get("/project/Beta")
     assert response.status_code == 302
     assert response.location.endswith("/")
 
