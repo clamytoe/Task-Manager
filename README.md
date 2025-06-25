@@ -95,7 +95,7 @@ Then simply open up a browser, Chrome/Chromium recommended,
 to [localhost:5000](http://localhost:5000/) and play around
 with it :).
 
-[python-version]:https://img.shields.io/badge/python-3.13.3-brightgreen.svg
+[python-version]:https://img.shields.io/badge/python-3.13.0-brightgreen.svg
 [latest-version]:https://img.shields.io/badge/version-0.1.1-blue.svg
 [issues-image]:https://img.shields.io/github/issues/clamytoe/Task-Manager.svg
 [issues-url]:https://github.com/clamytoe/Task-Manager/issues
