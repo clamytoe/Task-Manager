@@ -7,7 +7,7 @@ from task_manager import create_app, db
 from task_manager.models import Projects, Tasks
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def app():
     db_fd, db_path = tempfile.mkstemp(suffix=".sqlite3")
     app = create_app()
