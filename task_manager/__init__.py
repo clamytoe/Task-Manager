@@ -11,7 +11,7 @@ def create_app():
     db.init_app(app)
 
     with app.app_context():
-        from . import rest_api, routes
+        from . import routes
 
         db.create_all()
         app.register_blueprint(routes.routes)
