@@ -99,7 +99,7 @@ with it :).
 [latest-version]:https://img.shields.io/badge/version-0.1.1-blue.svg
 [issues-image]:https://img.shields.io/github/issues/clamytoe/Task-Manager.svg
 [issues-url]:https://github.com/clamytoe/Task-Manager/issues
-[codecov-image]:https://codecov.io/gh/clamytoe/Task-Manager/branch/main/graph/badge.svg
+[codecov-image]:https://codecov.io/gh/clamytoe/Task-Manager/branch/master/graph/badge.svg
 [codecov-url]:https://codecov.io/gh/clamytoe/Task-Manager
 [fork-image]:https://img.shields.io/github/forks/clamytoe/Task-Manager.svg
 [fork-url]:https://github.com/clamytoe/Task-Manager/network
