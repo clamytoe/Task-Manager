@@ -158,13 +158,13 @@
               {% for task in tasks %}
               {% if task.project_id == active %}
               {% if task.status %}
-              <tr class="success">
+              <tr class="task-row success">
                 <td>
                   <span class="desc-text" data-task-id="{{ task.task_id }}">{{ task.task }}</span>
                   <i class="fas fa-pencil-alt edit-desc" title="Edit Description"></i>
                 </td>
                 {% else %}
-              <tr class="active">
+              <tr class="task-row active">
                 <td>
                   <strike>
                     <span class="desc-text" data-task-id="{{ task.task_id }}">{{ task.task }}</span>

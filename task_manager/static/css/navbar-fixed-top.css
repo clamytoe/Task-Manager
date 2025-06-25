@@ -66,8 +66,11 @@ body {
   margin-left: 8px;
   color: #666;
   cursor: pointer;
+  visibility: hidden;
+  transition: visibility 0.2s ease-in;
 }
 
-.edit-desc:hover {
+.task-row:hover .edit-desc {
   color: #000;
+  visibility: visible;
 }
