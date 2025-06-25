@@ -12,6 +12,6 @@ cov-html:
 
 clean:
 	find . -type d -name "__pycache__" -exec rm -r {} + || true
+	find . -type f -name "*.pdf" -exec rm {} +
 	rm -rf .pytest_cache .coverage htmlcov
-	rm *.pdf
 	clear
