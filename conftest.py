@@ -41,24 +41,24 @@ def client(app):
 
 
 @pytest.fixture
-def make_project():
-    def _make_project(name="Test Project", active=True):
+def create_project():
+    def _create_project(name="Test Project", active=True):
         project = Projects(project=name, active=active)
         db.session.add(project)
         db.session.commit()
         return project
 
-    return _make_project
+    return _create_project
 
 
 @pytest.fixture
-def make_task(make_project):
-    def _make_task(task_desc="Sample Task", status=True, project=None):
+def create_task(create_project):
+    def _create_task(task_desc="Sample Task", status=True, project=None):
         if not project:
-            project = make_project()
+            project = create_project()
         task = Tasks(project_id=project.project_id, task=task_desc, status=status)
         db.session.add(task)
         db.session.commit()
         return task
 
-    return _make_task
+    return _create_task

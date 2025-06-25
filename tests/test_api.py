@@ -2,12 +2,12 @@ from task_manager import db
 from task_manager.models import Tasks
 
 
-def test_add_task(client, make_project):
-    project = make_project(name="Urgent Stuff")
+def test_add_task(client, create_project):
+    project = create_project(name="Urgent Stuff")
     response = client.post(
         "/add",
         data={
-            "project": project.project_name,
+            "project": project.project_id,
             "task": "Finish tests",
             "status": 1,
         },
@@ -15,8 +15,8 @@ def test_add_task(client, make_project):
     assert response.status_code == 302
 
 
-def test_rename_task_desc(app, client, make_task):
-    task = make_task(task_desc="Old Task")
+def test_rename_task_desc(app, client, create_task):
+    task = create_task(task_desc="Old Task")
 
     response = client.post(
         f"/rename_task_desc/{task.task_id}",
@@ -30,8 +30,8 @@ def test_rename_task_desc(app, client, make_task):
         assert updated.task == "Updated Task"  # type: ignore
 
 
-def test_delete_task(app, client, make_task):
-    task = make_task(task_desc="Vanishing Task")
+def test_delete_task(app, client, create_task):
+    task = create_task(task_desc="Vanishing Task")
     tid = task.task_id
 
     response = client.get(f"/delete/{tid}")
