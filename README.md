@@ -1,5 +1,14 @@
 # Task-Manager
-A no frills task manager that's really intuitive and simple to use that I created for a PyBites code challenge.
+
+> *A no frills task manager that's really intuitive and simple to use that I created for a PyBites code challenge.*
+
+![Python version][python-version]
+![Latest version][latest-version]
+[![GitHub issues][issues-image]][issues-url]
+[![codecov][codecov-image]][codecov-url]
+[![GitHub forks][fork-image]][fork-url]
+[![GitHub Stars][stars-image]][stars-url]
+[![License][license-image]][license-url]
 
 ## Index
 * [UI](#ui)
@@ -86,4 +95,15 @@ Then simply open up a browser, Chrome/Chromium recommended,
 to [localhost:5000](http://localhost:5000/) and play around
 with it :).
 
-
+[python-version]:https://img.shields.io/badge/python-3.13.3-brightgreen.svg
+[latest-version]:https://img.shields.io/badge/version-0.1.1-blue.svg
+[issues-image]:https://img.shields.io/github/issues/clamytoe/Task-Manager.svg
+[issues-url]:https://github.com/clamytoe/Task-Manager/issues
+[codecov-image]:https://codecov.io/gh/clamytoe/Task-Manager/branch/main/graph/badge.svg
+[codecov-url]:https://codecov.io/gh/clamytoe/Task-Manager
+[fork-image]:https://img.shields.io/github/forks/clamytoe/Task-Manager.svg
+[fork-url]:https://github.com/clamytoe/Task-Manager/network
+[stars-image]:https://img.shields.io/github/stars/clamytoe/Task-Manager.svg
+[stars-url]:https://github.com/clamytoe/Task-Manager/stargazers
+[license-image]:https://img.shields.io/github/license/clamytoe/Task-Manager.svg
+[license-url]:https://github.com/clamytoe/Task-Manager/blob/main/LICENSE
