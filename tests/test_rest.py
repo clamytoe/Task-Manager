@@ -1,5 +1,7 @@
 import json
 
+import pytest
+
 from task_manager import db
 from task_manager.models import Projects, Tasks
 
@@ -186,3 +188,47 @@ def test_delete_all_success(client, app):
     with app.app_context():
         assert Projects.query.count() == 0
         assert Tasks.query.count() == 0
+
+
+# @pytest.mark.parametrize(
+#     "payload, status_code, expected_key",
+#     [
+#         (None, 400, "error"),  # No payload
+#         ({}, 400, "error"),  # Missing all fields
+#         ({"name": ""}, 400, "error"),  # Empty name
+#         ({"name": "Test"}, 201, "id"),  # Valid with default active
+#         ({"name": "Test", "active": "yes"}, 400, "error"),  # Invalid 'active' type
+#         ({"name": "Test", "active": None}, 400, "error"),  # None is not bool
+#         ({"name": 123, "active": True}, 400, "error"),  # Non-string name
+#     ],
+# )
+# def test_create_project_edge_cases(client, payload, status_code, expected_key):
+#     response = client.post("/api/projects", json=payload)
+#     data = json.loads(response.data)
+#     assert response.status_code == status_code
+#     assert expected_key in data
+def test_api_delete_all_success(client, create_task, app):
+    # Create a task (and project implicitly)
+    create_task("Cleanup", status=True)
+
+    response = client.delete("/api/delete_all")
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["message"] == "All projects and tasks deleted"
+
+    with app.app_context():
+        assert Projects.query.count() == 0
+        assert Tasks.query.count() == 0
+
+
+def test_api_delete_all_failure(client, monkeypatch):
+    def boom(*args, **kwargs):
+        raise Exception("Simulated DB failure")
+
+    monkeypatch.setattr("sqlalchemy.orm.query.Query.delete", boom)
+
+    response = client.delete("/api/delete_all")
+    assert response.status_code == 500
+    data = response.get_json()
+    assert data["error"] == "Failed to delete all records"
+    assert "details" in data

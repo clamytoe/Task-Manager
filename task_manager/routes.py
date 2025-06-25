@@ -31,6 +31,7 @@ def index():
         if not active:
             projects[0].active = True
             active = projects[0].project_id
+            db.session.commit()
     else:
         projects = None
 
@@ -52,8 +53,8 @@ def add_task():
     """
     found = False
     project_id = None
-    task = request.form["task"]
-    project = request.form["project"]
+    task = request.form.get("task")
+    project = request.form.get("project")
 
     if not task:
         return redirect("/")
@@ -82,7 +83,7 @@ def add_task():
         else:
             proj.active = False
 
-    status = bool(int(request.form["status"]))
+    status = bool(int(request.form.get("status")))
 
     # add the new task
     new_task = Tasks(project_id, task, status)
