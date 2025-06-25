@@ -95,6 +95,13 @@ Then simply open up a browser, Chrome/Chromium recommended,
 to [localhost:5000](http://localhost:5000/) and play around
 with it :).
 
+## Interface
+
+![ui-sample-1](img/ui-sample-1.png)
+
+![ui-sample-2](img/ui-sample-2.png)
+
+
 [python-version]:https://img.shields.io/badge/python-3.13.0-brightgreen.svg
 [latest-version]:https://img.shields.io/badge/version-0.1.1-blue.svg
 [issues-image]:https://img.shields.io/github/issues/clamytoe/Task-Manager.svg
