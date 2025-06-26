@@ -22,6 +22,8 @@
   * [Status Toggle](#status-toggle)
   * [Remove Task](#remove-task)
 * [Installation](#installation)
+* [Interface](#interface)
+* [REST API](REST_README.md)
 
 #### UI
 
@@ -103,7 +105,7 @@ with it :).
 
 
 [python-version]:https://img.shields.io/badge/python-3.13.0-brightgreen.svg
-[latest-version]:https://img.shields.io/badge/version-0.1.1-blue.svg
+[latest-version]:https://img.shields.io/badge/version-0.2.1-blue.svg
 [issues-image]:https://img.shields.io/github/issues/clamytoe/Task-Manager.svg
 [issues-url]:https://github.com/clamytoe/Task-Manager/issues
 [codecov-image]:https://codecov.io/gh/clamytoe/Task-Manager/branch/master/graph/badge.svg
