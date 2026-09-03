@@ -38,6 +38,7 @@ source = ["task_manager"]
 show_missing = true
 
 [tool.black]
+target-version = ["py313"]
 line-length = 88
 
 [tool.isort]
