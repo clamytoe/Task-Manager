@@ -15,7 +15,7 @@ help:
 	@echo "make lint        Run black, isort, and mypy checks"
 	@echo "make format      Auto-format code with black and isort"
 	@echo "make reset       Clean environment and reinstall everything"
-	@echo "make clean       Remove caches, artifacts, and .venv"
+	@echo "make clean       Remove caches and artifacts"
 	@echo ""
 
 # Install all project dependencies
