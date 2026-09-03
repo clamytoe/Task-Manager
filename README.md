@@ -140,17 +140,11 @@ Use `make help` to see the commands that are available:
 
     Task Manager — Makefile Commands
     --------------------------------
-    make sync        Install all project dependencies using uv
-    make sync-dev    Install dev dependencies (pytest, coverage)
-    make dev         Start Flask in development mode (debug + reload)
-    make prod        Start production server using gunicorn
+    make dev         Run Flask development server
+    make prod        Run Gunicorn production server
     make test        Run tests
-    make cov         Run tests with coverage (terminal report)
-    make cov-html    Run tests with coverage (HTML report)
-    make lint        Run black, isort, and mypy checks
-    make format      Auto-format code with black and isort
-    make reset       Clean environment and reinstall everything
     make clean       Remove caches and artifacts
+    make reset       Rebuild environment
 
 [python-version]:https://img.shields.io/badge/python-3.13.15-brightgreen.svg
 [latest-version]:https://img.shields.io/badge/version-0.3.0-blue.svg
