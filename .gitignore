@@ -1,6 +1,14 @@
-__pycache__/
-*.db
-.coverage
+# Virtual environments
 .venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Coverage
+htmlcov/
+.coverage
+.pytest_cache/
+
+# VS Code
 .vscode/
-instance/
