@@ -12,3 +12,6 @@ htmlcov/
 
 # VS Code
 .vscode/
+
+# Application specific
+instance/
