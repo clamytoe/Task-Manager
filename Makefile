@@ -5,17 +5,11 @@ help:
 	@echo ""
 	@echo "Task Manager — Makefile Commands"
 	@echo "--------------------------------"
-	@echo "make sync        Install all project dependencies using uv"
-	@echo "make sync-dev    Install dev dependencies (pytest, coverage)"
-	@echo "make dev         Start Flask in development mode (debug + reload)"
-	@echo "make prod        Start production server using gunicorn"
+	@echo "make dev         Run Flask development server"
+	@echo "make prod        Run Gunicorn production server"
 	@echo "make test        Run tests"
-	@echo "make cov         Run tests with coverage (terminal report)"
-	@echo "make cov-html    Run tests with coverage (HTML report)"
-	@echo "make lint        Run black, isort, and mypy checks"
-	@echo "make format      Auto-format code with black and isort"
-	@echo "make reset       Clean environment and reinstall everything"
 	@echo "make clean       Remove caches and artifacts"
+	@echo "make reset       Rebuild environment"
 	@echo ""
 
 # Install all project dependencies
@@ -26,12 +20,18 @@ sync:
 sync-dev:
 	uv sync --group dev
 
+# Ensure uv.lock matches pyproject.toml
+lockcheck:
+	@echo "Checking lockfile consistency..."
+	@uv lock --check || (echo "❌ uv.lock is out of date. Run: uv lock"; exit 1)
+	@echo "✔ uv.lock is up to date."
+
 # Development server (debug + auto-reload)
-dev:
+dev: lockcheck
 	uv run flask --app task_manager.app run --debug --reload
 
 # Production server (gunicorn)
-prod:
+prod: lockcheck
 	uv run gunicorn "task_manager.wsgi:app" --config gunicorn.conf.py
 
 # Run tests
