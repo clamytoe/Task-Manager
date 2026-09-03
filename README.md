@@ -1,6 +1,6 @@
 # Task-Manager
 
-> *A no frills task manager that's really intuitive and simple to use that I created for a PyBites code challenge.*
+> *A no frills task manager that's really intuitive and simple to use.*
 
 ![Python version][python-version]
 ![Latest version][latest-version]
@@ -11,6 +11,7 @@
 [![License][license-image]][license-url]
 
 ## Index
+
 * [UI](#ui)
   * [New Project](#new-project)
   * [New Task](#new-task)
@@ -25,77 +26,106 @@
 * [Interface](#interface)
 * [REST API](REST_README.md)
 
-#### UI
+### UI
 
-##### New Project
+#### New Project
+
 ![New Project](img/project.png)
 
-Enter the project name that you want to store your tasks
-under.
+Enter the project name that you want to store your tasks under.
 
-##### New Task
+#### New Task
+
 ![New Task](img/task.png)
 
 Describe the task that you need to accomplish.
 
-##### Task Status
+#### Task Status
+
 ![Task Status](img/status.png)
 
 The task can be entered as open or close.
 
-##### Controls
+#### Controls
+
 ![Controls](img/controls.png)
 
-Clicking on the **Add** button will add the new task and create
-a new project if it does not already exist.
+Clicking on the **Add** button will add the new task and create a new project if it does not already exist.
 
 Clicking on the **Reset** button will reset the fields.
 
-##### Project tabs
+#### Project tabs
+
 ![Project Tabs](img/tabs.png)
 
-Any projects that are created will be displayed here in the
-tab area. Clickin on the tab switches you to that project.
+Any projects that are created will be displayed here in the tab area.
+Clickin on the tab switches you to that project.
 
-##### Remove Project
+#### Remove Project
+
 ![Remove Project](img/remove_project.png)
 
-Clicking on this will remove the currently active project
-along with all of it's corresponding tasks.
+Clicking on this will remove the currently active project along with all of it's corresponding tasks.
 
-##### Remove all tasks
+#### Remove all tasks
+
 ![Remove Tasks](img/remove_all_tasks.png)
 
-Clicking this will remove all tasks from the active project,
-but leave the project active.
+Clicking this will remove all tasks from the active project, but leave the project active.
 
-##### Status toggle
+#### Status toggle
+
 ![Status Toggle](img/status_toggle.png)
 
 Clicking this will toggle the tasks from open to close.
 
-##### Remove task
+#### Remove task
+
 ![Remove Task](img/remove_task.png)
 
 Clicking this will remove that tasks from the project.
 
 ## Installation
-First of all you have to prepare your environment. Select
-a location where you want to store the files. I will use 
-Projects as my example. I'm also on a linux machine, but
-you should be able to figure it out for any other platform.
+
+First of all you have to prepare your environment. Select a location where you want to store the files. I will use Projects as my example. I'm also on a linux machine, but you should be able to figure it out for any other platform.
+
+### Create a virtual environment
 
     mkdir Projects
     cd Projects
     git clone https://github.com/clamytoe/Task-Manager.git
+
+The rest depends on your preferred method of managing virtual environments.
+
+#### Conda env
+
+    conda env create -f environment.yml
+    make sync
+
+#### Python venv
+
     python3 -m venv venv
     source venv/bin/activate
-    pip install -r requirements.txt
-    python app.py
+    make sync
 
-Then simply open up a browser, Chrome/Chromium recommended,
-to [localhost:5000](http://localhost:5000/) and play around
-with it :).
+### Starting the server
+
+For the develpment server run:
+
+    make dev
+
+For the production server:
+
+    make prod
+
+### Using the application
+
+Simply open up a browser to:
+
+`dev`: [localhost:5000](http://localhost:5000/)
+`prod`: [localhost:8000](http://localhost:8000/)
+
+and play around with it :).
 
 ## Interface
 
@@ -103,9 +133,26 @@ with it :).
 
 ![ui-sample-2](img/ui-sample-2.png)
 
+## Makefile commands
 
-[python-version]:https://img.shields.io/badge/python-3.13.0-brightgreen.svg
-[latest-version]:https://img.shields.io/badge/version-0.2.1-blue.svg
+Use `make help` to see the commands that are available:
+
+    Task Manager — Makefile Commands
+    --------------------------------
+    make sync        Install all project dependencies using uv
+    make sync-dev    Install dev dependencies (pytest, coverage)
+    make dev         Start Flask in development mode (debug + reload)
+    make prod        Start production server using gunicorn
+    make test        Run tests
+    make cov         Run tests with coverage (terminal report)
+    make cov-html    Run tests with coverage (HTML report)
+    make lint        Run black, isort, and mypy checks
+    make format      Auto-format code with black and isort
+    make reset       Clean environment and reinstall everything
+    make clean       Remove caches and artifacts
+
+[python-version]:https://img.shields.io/badge/python-3.13.15-brightgreen.svg
+[latest-version]:https://img.shields.io/badge/version-0.3.0-blue.svg
 [issues-image]:https://img.shields.io/github/issues/clamytoe/Task-Manager.svg
 [issues-url]:https://github.com/clamytoe/Task-Manager/issues
 [codecov-image]:https://codecov.io/gh/clamytoe/Task-Manager/branch/master/graph/badge.svg
