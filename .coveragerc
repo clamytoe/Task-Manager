@@ -1,6 +1,6 @@
 [run]
 source = task_manager
 omit =
-    app.py
+    task_manager/app.py
+    task_manager/*wsgi*.py
     */tests/*
-    */venv/*
