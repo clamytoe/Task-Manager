@@ -123,6 +123,7 @@ For the production server:
 Simply open up a browser to:
 
 `dev`: [localhost:5000](http://localhost:5000/)
+
 `prod`: [localhost:8000](http://localhost:8000/)
 
 and play around with it :).
