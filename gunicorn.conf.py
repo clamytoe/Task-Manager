@@ -4,8 +4,8 @@ import multiprocessing
 bind = "0.0.0.0:8000"
 
 # Worker configuration
-workers = 3        # nice and sane
-threads = 2        # enough for light concurrency
+workers = 3  # nice and sane
+threads = 2  # enough for light concurrency
 
 worker_class = "gthread"
 
