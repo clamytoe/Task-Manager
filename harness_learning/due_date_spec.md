@@ -1,20 +1,23 @@
 # Specification: Task Due Dates Feature
 
 ## 1. Overview & Purpose
+
 This specification defines the requirement for adding an **optional Due Date** field to tasks in the Task-Manager application. When specified, the due date is displayed directly in front of the task description in `DD/MM` format. If the due date has passed, the due date label turns **red**. Tasks created without a due date (and all pre-existing tasks in the database) default to showing `"Unassigned"`.
 
 ---
 
 ## 2. Core Requirements & Scope Boundaries
 
-### Included Features:
+### Included Features
+
 1. **Optional Due Date Input**: User can optionally select or enter a due date during task creation via Web UI or REST API.
 2. **Display Format**: Rendered in `DD/MM` format (e.g. `25/12`) directly in front of the status checkbox / task action icons.
 3. **Unassigned Fallback**: Tasks without a due date display `"Unassigned"`. All existing records in the database inherit `"Unassigned"`.
 4. **Overdue Highlighting**: If the current date exceeds the task's due date, the due date text/badge renders in **red** (e.g., Bootstrap CSS `text-danger` or `label-danger`).
 5. **REST API & Swagger Integration**: `due_date` field exposed in GET, POST, and PUT API responses/payloads.
 
-### Explicit Negative Constraints (Out of Scope):
+### Explicit Negative Constraints (Out of Scope)
+
 * **NO Reminders**: Do NOT build email, push, or popup reminder functionality.
 * **NO Notifications**: Do NOT send background notifications or queue system messages.
 * **NO Recurring Schedules**: Do NOT build recurring due date logic or calendar sync integrations.
@@ -24,8 +27,10 @@ This specification defines the requirement for adding an **optional Due Date** f
 ## 3. Interfaces & Data Contracts
 
 ### A. Database Schema (`task_manager/models.py`)
+
 * **New Column**: `due_date = db.Column(db.String(10), default="Unassigned")`
 * **Model Constructor**:
+
   ```python
   def __init__(self, project_id, task, status=True, priority="Medium", due_date="Unassigned"):
       self.project_id = project_id
@@ -36,12 +41,14 @@ This specification defines the requirement for adding an **optional Due Date** f
   ```
 
 ### B. Web Interface (`task_manager/templates/index.html` & `routes.py`)
+
 1. **Creation Form**:
    * Add optional date input field in task form:
      `<input type="date" id="due_date" name="due_date" class="form-control" placeholder="Due Date (DD/MM)">`
 2. **Task Table Display**:
    * Position: Rendered just before the status check icon / column in `index.html`.
    * Template Logic:
+
      ```jinja2
      {% if task.due_date and task.due_date != "Unassigned" and is_overdue(task.due_date) %}
        <span class="text-danger font-weight-bold">{{ task.due_date }}</span>
@@ -51,6 +58,7 @@ This specification defines the requirement for adding an **optional Due Date** f
      ```
 
 ### C. REST API Contracts (`task_manager/routes.py`)
+
 1. **`GET /api/tasks` & `GET /api/tasks/<id>`**:
    * Response payload key: `"due_date": "25/12"` or `"due_date": "Unassigned"`.
 2. **`POST /api/tasks`**:
