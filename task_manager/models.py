@@ -1,7 +1,12 @@
+from datetime import date
+
+from sqlalchemy import Date
 from sqlalchemy.orm import validates
 from werkzeug.utils import secure_filename
 
 from task_manager import db
+
+VALID_PRIORITIES = {"Low", "Medium", "High"}
 
 
 class Projects(db.Model):
@@ -25,23 +30,35 @@ class Projects(db.Model):
         return "<Project {}>".format(self.project_name)
 
 
-VALID_PRIORITIES = {"Low", "Medium", "High"}
-
-
 class Tasks(db.Model):
     """Tasks schema"""
-
     task_id = db.Column(db.Integer, primary_key=True)
-    project_id = db.Column(db.Integer, db.ForeignKey("projects.project_id"))
-    task = db.Column(db.Text)
-    status = db.Column(db.Boolean, default=False)
-    priority = db.Column(db.String(10), default="Medium")
+    project_name = db.Column(db.String(255), nullable=False)
+    task = db.Column(db.String(255), nullable=False)
+    status = db.Column(db.Boolean, default=True)
+    priority = db.Column(db.String(20), default="Medium")
+    due_date = db.Column(Date, nullable=True)
 
-    def __init__(self, project_id, task, status=True, priority="Medium"):
-        self.project_id = project_id
+    def __init__(self, project_name, task, *, status=True, priority="Medium", due_date=None):
+        self.project_name = project_name
         self.task = task
         self.status = status
-        self.priority = priority if priority in VALID_PRIORITIES else "Medium"
+        self.priority = priority
 
-    def __repr__(self):
-        return f"<Task {self.task}>"
+        # Accept None or ISO string
+        if isinstance(due_date, str):
+            self.due_date = date.fromisoformat(due_date)
+        else:
+            self.due_date = due_date
+
+    @property
+    def is_overdue(self):
+        if not self.due_date:
+            return False
+        return date.today() > self.due_date
+
+    @property
+    def due_date_display(self):
+        if not self.due_date:
+            return "Unassigned"
+        return self.due_date.strftime("%d/%m")
