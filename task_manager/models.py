@@ -43,13 +43,18 @@ class Tasks(db.Model):
         self.project_id = project_id
         self.task = task
         self.status = status
-        self.priority = priority
+        
+        allowed = {"Low", "Medium", "High"}
+        self.priority = priority if priority in allowed else "Medium"
 
         # Accept None or ISO string
         if isinstance(due_date, str):
             self.due_date = date.fromisoformat(due_date)
         else:
             self.due_date = due_date
+
+    def __repr__(self):
+        return f"<Task {self.task}>"
 
     @property
     def is_overdue(self):
