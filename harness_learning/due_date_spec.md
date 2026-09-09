@@ -1,107 +1,243 @@
-# Specification: Task Due Dates Feature
+# **Due Date Specification (`due_date_spec.md`)**
 
-## 1. Overview & Purpose
+## **Overview**
 
-This specification defines the requirement for adding an **optional Due Date** field to tasks in the Task-Manager application. When specified, the due date is displayed directly in front of the task description in `DD/MM` format. If the due date has passed, the due date label turns **red**. Tasks created without a due date (and all pre-existing tasks in the database) default to showing `"Unassigned"`.
-
----
-
-## 2. Core Requirements & Scope Boundaries
-
-### Included Features
-
-1. **Optional Due Date Input**: User can optionally select or enter a due date during task creation via Web UI or REST API.
-2. **Display Format**: Rendered in `DD/MM` format (e.g. `25/12`) directly in front of the status checkbox / task action icons.
-3. **Unassigned Fallback**: Tasks without a due date display `"Unassigned"`. All existing records in the database inherit `"Unassigned"`.
-4. **Overdue Highlighting**: If the current date exceeds the task's due date, the due date text/badge renders in **red** (e.g., Bootstrap CSS `text-danger` or `label-danger`).
-5. **REST API & Swagger Integration**: `due_date` field exposed in GET, POST, and PUT API responses/payloads.
-
-### Explicit Negative Constraints (Out of Scope)
-
-* **NO Reminders**: Do NOT build email, push, or popup reminder functionality.
-* **NO Notifications**: Do NOT send background notifications or queue system messages.
-* **NO Recurring Schedules**: Do NOT build recurring due date logic or calendar sync integrations.
+The Task Manager supports optional due dates for tasks. Due dates allow users to track deadlines, highlight overdue items, and sort tasks more effectively. All due‑date handling is consistent across the UI, backend routes, and API endpoints.
 
 ---
 
-## 3. Interfaces & Data Contracts
+## **Data Model**
 
-### A. Database Schema (`task_manager/models.py`)
+### **Storage**
 
-* **New Column**: `due_date = db.Column(db.String(10), default="Unassigned")`
-* **Model Constructor**:
+- Due dates are stored as `date` objects in the database.
+- The column is nullable:
+  - `NULL` means “no due date assigned.”
 
-  ```python
-  def __init__(self, project_id, task, status=True, priority="Medium", due_date="Unassigned"):
-      self.project_id = project_id
-      self.task = task
-      self.status = status
-      self.priority = priority
-      self.due_date = due_date if due_date else "Unassigned"
-  ```
+### **Accepted Format**
 
-### B. Web Interface (`task_manager/templates/index.html` & `routes.py`)
+- All incoming due dates must be ISO‑8601 format:
 
-1. **Creation Form**:
-   * Add optional date input field in task form:
-     `<input type="date" id="due_date" name="due_date" class="form-control" placeholder="Due Date (DD/MM)">`
-2. **Task Table Display**:
-   * Position: Rendered just before the status check icon / column in `index.html`.
-   * Template Logic:
+      YYYY-MM-DD
 
-     ```jinja2
-     {% if task.due_date and task.due_date != "Unassigned" and is_overdue(task.due_date) %}
-       <span class="text-danger font-weight-bold">{{ task.due_date }}</span>
-     {% else %}
-       <span>{{ task.due_date }}</span>
-     {% endif %}
-     ```
+- Example:
 
-### C. REST API Contracts (`task_manager/routes.py`)
+      2026-09-10
 
-1. **`GET /api/tasks` & `GET /api/tasks/<id>`**:
-   * Response payload key: `"due_date": "25/12"` or `"due_date": "Unassigned"`.
-2. **`POST /api/tasks`**:
-   * Optional JSON property: `"due_date": "25/12"`. If omitted or null, defaults to `"Unassigned"`.
-3. **`PUT /api/tasks/<id>`**:
-   * Optional JSON property: `"due_date": "25/12"`. Updates task due date if provided.
+### **Invalid Formats**
+
+Any non‑ISO date (e.g., `"09/10/2026"`, `"2026/09/10"`, `"banana"`) results in:
+
+      HTTP 400 Invalid date format, expected YYYY-MM-DD
 
 ---
 
-## 4. Blast Radius Analysis & Risk Mitigation
+## **Behavior Summary**
 
-| Component | Blast Radius Risk | Mitigation Strategy |
-| :--- | :--- | :--- |
-| **`Tasks.__init__` Constructor** | **High**: Adding `due_date` as a required parameter breaks all existing model instantiations in routes and unit test fixtures. | Make `due_date="Unassigned"` an optional keyword argument with default value. |
-| **Database Backward Compatibility** | **High**: Existing rows in `ctm.db` will have `NULL` or missing `due_date` values. | Python property getter / helper method treats `None` or missing value as `"Unassigned"`. |
-| **Date Parsing Mismatch** | **Medium**: Users or API clients submitting dates in `YYYY-MM-DD` vs `DD/MM` formats. | Standardize formatting logic helper `format_due_date()` in Python to format valid dates to `DD/MM` and fall back safely to `"Unassigned"`. |
-| **Overdue Comparison** | **Medium**: Date comparison logic failing across month boundaries or leap years. | Parse `DD/MM` with current year context using Python `datetime` for overdue comparison (`task_date < today`). |
-
----
-
-## 5. Verification & Test Strategy
-
-To verify feature correctness without regressions:
-
-1. **Model Tests (`tests/test_models.py`)**:
-   * Verify default `due_date` is `"Unassigned"`.
-   * Verify explicit `due_date` storing (e.g. `"15/08"`).
-2. **Web Route & Overdue Styling Tests (`tests/test_routes.py`)**:
-   * Verify task creation with and without `due_date`.
-   * **Mandatory Test**: Verify that if a due date has passed (e.g., yesterday's date formatted as `DD/MM`), the rendered HTML contains the `text-danger` class or red styling indicator.
-3. **REST API Tests (`tests/test_rest.py`)**:
-   * Verify `GET /api/tasks` returns `"due_date"` field for all records.
-   * Verify `POST /api/tasks` accepts `"due_date"`.
-   * Verify `PUT /api/tasks/<id>` updates `"due_date"`.
+- Accepts ISO dates (`YYYY-MM-DD`)
+- Stores internally as Python `date` objects
+- Displays in UI as `DD/MM`
+- Empty string clears the due date
+- Missing field leaves the due date unchanged
+- Invalid date returns HTTP 400
+- Overdue = `due_date < today()`
+- No due date = never overdue
+- Priority fallback = `"Medium"`
+- Sorting: **priority → due date → task name**
 
 ---
 
-## 6. Acceptance Criteria (Definition of Done)
+## **Overdue Logic**
 
-* **AC 1**: Tasks created without a due date show `"Unassigned"`.
-* **AC 2**: Pre-existing tasks in the database display `"Unassigned"`.
-* **AC 3**: Due dates display in `DD/MM` format positioned before the status check icon.
-* **AC 4**: When a task due date is in the past, it renders in **red** text/style on the UI.
-* **AC 5**: REST API GET, POST, and PUT endpoints support `"due_date"`.
-* **AC 6**: Automated test asserts that overdue tasks render with red styling indicator.
-* **AC 7**: Zero reminders, notifications, or extraneous features are added.
+A task is considered **overdue** when:
+
+1. `due_date` is not `None`
+2. `due_date < date.today()`
+3. Tasks due today are NOT considered overdue.
+
+Tasks with no due date are **never** overdue.
+
+### **UI Behavior**
+
+- Overdue tasks are visually highlighted (red text or icon).
+- Overdue status does **not** affect sorting order unless a future feature changes this.
+
+---
+
+## **Routes**
+
+### **1. `/edit_due_date/<id>` (POST)**
+
+Updates the due date for a task.
+
+#### **Route Input Rules**
+
+- `"due_date": "YYYY-MM-DD"` → sets the date
+- `"due_date": ""` → clears the date
+- `"due_date": null` → clears the date
+- Missing `"due_date"` → no change
+
+#### **Route Error Handling**
+
+- Invalid date → `400`
+- Task not found → `404`
+
+#### **Route Success**
+
+      204 No Content
+
+---
+
+### **2. `/api/tasks` (POST) — Create Task**
+
+Creates a new task with optional due date.
+
+#### **Create Task Input Rules**
+
+- `"due_date": "YYYY-MM-DD"` → parsed and stored
+- `"due_date": ""` → stored as `None`
+- Missing `"due_date"` → stored as `None`
+
+#### **Create Task Priority Rules**
+
+- `"priority"` must be `"Low"`, `"Medium"`, or `"High"`
+- Anything else → fallback to `"Medium"`
+
+#### **Create Task Error Handling**
+
+- Missing `"task"` or `"project_id"` → `400`
+- Invalid date → `400`
+
+#### **Create Task Success**
+
+      201 Created
+
+---
+
+### **3. `/api/tasks/<id>` (PUT) — Update Task**
+
+Updates any combination of task fields, including due date.
+
+#### **Task Update Input Rules**
+
+- Missing fields → leave existing values unchanged
+- `"due_date": "YYYY-MM-DD"` → set date
+- `"due_date": ""` → clear date
+- `"due_date": null` → clear date
+
+#### **Task Update Error Handling**
+
+- Invalid date → `400`
+- Task not found → `404`
+
+#### **Task Update Success**
+
+      200 OK
+
+---
+
+## **UI Specification**
+
+### **Display Format**
+
+Due dates are shown as:
+
+      DD/MM
+
+Example:
+
+      10/09
+
+### **Editing**
+
+- Clicking the due date opens a date picker.
+- Clearing the field removes the due date.
+- The UI sends:
+  - `""` to clear
+  - `"YYYY-MM-DD"` to set
+
+### **Overdue Highlighting**
+
+- Overdue tasks appear in red.
+- Optional: A tooltip such as `title="Overdue" may be added.
+
+---
+
+## **Sorting Rules**
+
+Tasks are sorted in this order:
+
+1. **Priority**
+   - High  
+   - Medium  
+   - Low  
+2. **Due Date**
+   - Earliest first  
+   - Tasks with no due date appear last  
+3. **Task Description**
+   - Alphabetical
+
+---
+
+## **Database Constraints**
+
+- `due_date` is nullable.
+- No restriction on past or future dates.
+- Validation occurs at the route/API layer.
+
+---
+
+## **Timezone Assumptions**
+
+- All comparisons use server‑local date (`date.today()`).
+- No timezone conversion is performed.
+- Due dates are treated as all‑day deadlines.
+
+---
+
+## **Future Extensions**
+
+This spec is designed to support future enhancements:
+
+- Due **time** (datetime instead of date)
+- Recurring tasks
+- Reminder notifications
+- Calendar integration (Google/Outlook)
+- Overdue sorting options
+- Automatic snooze/reschedule
+- Bulk due‑date editing
+
+---
+
+## **Examples**
+
+### **Valid Create Request**
+
+```json
+{
+  "project_id": 1,
+  "task": "Pay rent",
+  "priority": "High",
+  "due_date": "2026-09-10"
+}
+```
+
+### **Clear Due Date**
+
+```json
+{
+  "due_date": ""
+}
+```
+
+### **Invalid Date**
+
+```json
+{
+  "due_date": "09-10-2026"
+}
+```
+
+Response:
+
+      400 Invalid date format, expected YYYY-MM-DD
