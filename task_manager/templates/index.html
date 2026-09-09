@@ -169,12 +169,6 @@
             </thead>
             <tbody>
               {% for task in tasks %}
-              <!-- <p>Active project: {{ active }}</p>
-              <p>Task project: {{ task.project_id }}</p>
-              <p>Task description: {{ task.task }}</p>
-              <p>Task status: {{ task.status }}</p>
-              <p>Task priority: {{ task.priority }}</p>
-              <p>Task due date: {{ task.due_date }}</p> -->
                 {% if task.project_id == active %}
                   {% if task.status %}
               <tr class="task-row success">
@@ -192,7 +186,7 @@
                 </td>
                   {% endif %}
                 <td align="center">
-                  <span class="due-date" data-due-date="{{ task.due_date }}">
+                  <span class="{{ 'overdue' if task.is_overdue else 'due-date' }}" data-due-date="{{ task.due_date }}">
                     {{ task.due_date_display }}
                   </span>
                 </td>
