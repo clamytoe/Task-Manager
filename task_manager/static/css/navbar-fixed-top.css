@@ -4,8 +4,19 @@ body {
 }
 
 .jumbotron {
-  padding-top: 12px;
-  padding-bottom: 72px;
+  padding-top: 8px;
+  padding-bottom: 110px;
+  margin-bottom: 0px;
+}
+
+.input-group {
+  margin-bottom: 10px;
+}
+
+.input-group .input-group-addon {
+  width: 100px;
+  text-align: left;
+  padding-left: 10px;
 }
 
 #taskNav {
