@@ -76,6 +76,7 @@
   <div class="container">
 
     <!-- Page contents -->
+    {% set active = active|int %}
     <div class="jumbotron">
       <h2>Task Manager</h2>
 
@@ -100,6 +101,8 @@
               <option value="Medium" selected>Medium</option>
               <option value="High">High</option>
             </select>
+            <span class="input-group-addon container-fluid">Due Date</span>
+            <input type="date" name="due_date" class="form-control">
           </div>
           <div class="input-group">
             <span class="spacer">&nbsp;</span>
@@ -153,26 +156,33 @@
           <table class="table table-bordered table-hover">
             <thead>
               <tr>
-                <td style="width:100%">DESCRIPTION</td>
-                <td>PRIORITY</td>
-                <td>STATUS</td>
-                <td align="center">
+                <th style="width:100%">DESCRIPTION</th>
+                <th>DUE DATE</th>
+                <th>PRIORITY</th>
+                <th>STATUS</th>
+                <th align="center">
                   <a href="/remove/{{ active }}">
                     <span class="glyphicon glyphicon-remove" aria-label="Delete"></span>
                   </a>
-                </td>
+                </th>
               </tr>
             </thead>
             <tbody>
               {% for task in tasks %}
-              {% if task.project_id == active %}
-              {% if task.status %}
+              <!-- <p>Active project: {{ active }}</p>
+              <p>Task project: {{ task.project_id }}</p>
+              <p>Task description: {{ task.task }}</p>
+              <p>Task status: {{ task.status }}</p>
+              <p>Task priority: {{ task.priority }}</p>
+              <p>Task due date: {{ task.due_date }}</p> -->
+                {% if task.project_id == active %}
+                  {% if task.status %}
               <tr class="task-row success">
                 <td>
                   <span class="desc-text" data-task-id="{{ task.task_id }}">{{ task.task }}</span>
                   <i class="fas fa-pencil-alt edit-desc" title="Edit Description"></i>
                 </td>
-                {% else %}
+                  {% else %}
               <tr class="task-row active">
                 <td>
                   <strike>
@@ -180,7 +190,12 @@
                   </strike>
                   <i class="fas fa-pencil-alt edit-desc" title="Edit Description"></i>
                 </td>
-                {% endif %}
+                  {% endif %}
+                <td align="center">
+                  <span class="due-date" data-due-date="{{ task.due_date }}">
+                    {{ task.due_date_display }}
+                  </span>
+                </td>
                 <td align="center">
                   <span class="label {% if task.priority == 'High' %}label-danger{% elif task.priority == 'Low' %}label-info{% else %}label-warning{% endif %}">
                     {{ task.priority }}
