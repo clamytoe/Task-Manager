@@ -19,14 +19,14 @@ jobs:
         with:
           python-version: 3.13
 
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
       - name: Install dependencies
-        run: |
-          pip install uv
-          uv sync
+        run: uv sync
 
       - name: Run tests and generate coverage
-        run: |
-          pytest --cov=task_manager --cov-report=xml
+        run: pytest --cov=task_manager --cov-report=xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
