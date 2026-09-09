@@ -33,14 +33,14 @@ class Projects(db.Model):
 class Tasks(db.Model):
     """Tasks schema"""
     task_id = db.Column(db.Integer, primary_key=True)
-    project_name = db.Column(db.String(255), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey("projects.project_id"))
     task = db.Column(db.String(255), nullable=False)
     status = db.Column(db.Boolean, default=True)
     priority = db.Column(db.String(20), default="Medium")
     due_date = db.Column(Date, nullable=True)
 
-    def __init__(self, project_name, task, *, status=True, priority="Medium", due_date=None):
-        self.project_name = project_name
+    def __init__(self, project_id, task, *, status=True, priority="Medium", due_date=None):
+        self.project_id = project_id
         self.task = task
         self.status = status
         self.priority = priority
