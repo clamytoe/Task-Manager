@@ -46,6 +46,18 @@ Describe the task that you need to accomplish.
 
 The task can be entered as open or close.
 
+#### Task Priority
+
+![Task Priority](img/priority.png)
+
+You can select priorities between `Low`, `Medium`, and `High`. It defaults to **Medium**.
+
+#### Task Due Date
+
+![Task Due Date](img/due-date.png)
+
+You can set a due date for your task. If the date passes, it will turn red in the task listing.
+
 #### Controls
 
 ![Controls](img/controls.png)
