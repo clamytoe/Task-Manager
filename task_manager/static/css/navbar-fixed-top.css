@@ -74,3 +74,17 @@ body {
   color: #000;
   visibility: visible;
 }
+
+.overdue {
+  color: red;
+  font-weight: bold;
+}
+
+thead th:first-child {
+  text-align: left;
+}
+
+thead th:not(:first-child) {
+  text-align: center;
+  white-space: nowrap;
+}
