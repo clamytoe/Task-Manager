@@ -308,3 +308,233 @@ def test_rename_task_desc_invalid_desc(client, create_task):
     response = client.post(f"/rename_task_desc/{task.task_id}", json={"new_desc": ""})
     assert response.status_code == 400
     assert b"Invalid description" in response.data
+
+
+def test_add_task_with_valid_due_date(client, app, create_project):
+    project = create_project(name="DueDateProject")
+
+    response = client.post("/add", data={
+        "task": "Test Task",
+        "project": project.project_name,
+        "status": "1",
+        "due_date": "2026-09-10"
+    }, follow_redirects=True)
+
+    assert response.status_code == 200
+
+    with app.app_context():
+        task = Tasks.query.first()
+        assert task.due_date.isoformat() == "2026-09-10"
+
+
+def test_add_task_with_invalid_due_date(client, app, create_project):
+    project = create_project(name="InvalidDueDateProject")
+
+    response = client.post("/add", data={
+        "task": "Test Task",
+        "project": project.project_name,
+        "status": "1",
+        "due_date": "not-a-date"
+    }, follow_redirects=True)
+
+    assert response.status_code == 200
+
+    with app.app_context():
+        task = Tasks.query.first()
+        assert task.due_date is None
+
+
+def test_add_task_without_due_date(client, app, create_project):
+    project = create_project(name="NoDueDateProject")
+
+    response = client.post("/add", data={
+        "task": "Test Task",
+        "project": project.project_name,
+        "status": "1"
+        # no due_date field
+    }, follow_redirects=True)
+
+    assert response.status_code == 200
+
+    with app.app_context():
+        task = Tasks.query.first()
+        assert task.due_date is None
+
+
+def test_add_task_priority_fallback(client, app, create_project):
+    project = create_project(name="PriorityFallbackProject")
+
+    response = client.post("/add", data={
+        "task": "Test Priority Fallback",
+        "project": project.project_name,
+        "status": "1",
+        "priority": "Banana"  # invalid priority
+    }, follow_redirects=True)
+
+    assert response.status_code == 200
+
+    with app.app_context():
+        task = Tasks.query.first()
+        assert task.priority == "Medium"
+
+
+def test_edit_due_date_valid(client, app, create_task):
+    task = create_task(task_desc="Test", due_date=None)
+
+    response = client.post(
+        f"/edit_due_date/{task.task_id}",
+        json={"due_date": "2026-09-10"}
+    )
+
+    assert response.status_code == 204
+
+    with app.app_context():
+        assert task.due_date.isoformat() == "2026-09-10"
+
+
+def test_edit_due_date_clear(client, app, create_task):
+    task = create_task(task_desc="Test", due_date="2026-09-10")
+
+    response = client.post(
+        f"/edit_due_date/{task.task_id}",
+        json={"due_date": ""}  # clears the date
+    )
+
+    assert response.status_code == 204
+
+    with app.app_context():
+        assert task.due_date is None
+
+
+def test_edit_due_date_invalid_format(client, create_task):
+    task = create_task(task_desc="Test")
+
+    response = client.post(
+        f"/edit_due_date/{task.task_id}",
+        json={"due_date": "not-a-date"}
+    )
+
+    assert response.status_code == 400
+
+
+def test_edit_due_date_task_not_found(client):
+    response = client.post(
+        "/edit_due_date/9999",
+        json={"due_date": "2026-09-10"}
+    )
+
+    assert response.status_code == 404
+
+
+def test_api_create_task_missing_fields(client):
+    response = client.post("/api/tasks", json={})
+    assert response.status_code == 400
+
+
+def test_api_create_task_valid_due_date(client, app, create_project):
+    project = create_project(name="API Project")
+
+    response = client.post("/api/tasks", json={
+        "project_id": project.project_id,
+        "task": "API Task",
+        "status": True,
+        "priority": "High",
+        "due_date": "2026-09-10"
+    })
+
+    assert response.status_code == 201
+
+    with app.app_context():
+        task = Tasks.query.first()
+        assert task.due_date.isoformat() == "2026-09-10"
+
+
+def test_api_create_task_invalid_due_date(client, create_project):
+    project = create_project(name="API Invalid Date")
+
+    response = client.post("/api/tasks", json={
+        "project_id": project.project_id,
+        "task": "Bad Date Task",
+        "due_date": "not-a-date"
+    })
+
+    assert response.status_code == 400
+
+
+def test_api_create_task_no_due_date(client, app, create_project):
+    project = create_project(name="API No Date")
+
+    response = client.post("/api/tasks", json={
+        "project_id": project.project_id,
+        "task": "No Date Task"
+    })
+
+    assert response.status_code == 201
+
+    with app.app_context():
+        task = Tasks.query.first()
+        assert task.due_date is None
+
+
+def test_api_create_task_priority_fallback(client, app, create_project):
+    project = create_project(name="API Priority Fallback")
+
+    response = client.post("/api/tasks", json={
+        "project_id": project.project_id,
+        "task": "API Priority Test",
+        "priority": "Banana"  # invalid priority
+    })
+
+    assert response.status_code == 201
+
+    with app.app_context():
+        task = Tasks.query.first()
+        assert task.priority == "Medium"
+
+
+def test_api_update_task_valid_due_date(client, app, create_task):
+    task = create_task(task_desc="Update Valid Date", due_date=None)
+
+    response = client.put(
+        f"/api/tasks/{task.task_id}",
+        json={"due_date": "2026-09-10"}
+    )
+
+    assert response.status_code == 200
+
+    with app.app_context():
+        assert task.due_date.isoformat() == "2026-09-10"
+
+
+def test_api_update_task_clear_due_date(client, app, create_task):
+    task = create_task(task_desc="Clear Date", due_date="2026-09-10")
+
+    response = client.put(
+        f"/api/tasks/{task.task_id}",
+        json={"due_date": ""}
+    )
+
+    assert response.status_code == 200
+
+    with app.app_context():
+        assert task.due_date is None
+
+
+def test_api_update_task_invalid_due_date(client, create_task):
+    task = create_task(task_desc="Invalid Date")
+
+    response = client.put(
+        f"/api/tasks/{task.task_id}",
+        json={"due_date": "not-a-date"}
+    )
+
+    assert response.status_code == 400
+
+
+def test_api_update_task_not_found(client):
+    response = client.put(
+        "/api/tasks/9999",
+        json={"due_date": "2026-09-10"}
+    )
+
+    assert response.status_code == 404
