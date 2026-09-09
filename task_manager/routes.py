@@ -146,7 +146,7 @@ def delete_task(task_id):
 @routes.route("/clear/<delete_id>")
 def clear_all(delete_id):
     """Dumps all tasks from the active tab and removes the project tab"""
-    Tasks.query.filter(Tasks.project_id == delete_id).delete()
+    Tasks.query.filter(Tasks.project_id == delete_id).delete()  # type: ignore
     Projects.query.filter(Projects.project_id == delete_id).delete()
     db.session.commit()
 
@@ -156,7 +156,7 @@ def clear_all(delete_id):
 @routes.route("/remove/<lists_id>")
 def remove_all(lists_id):
     """Dumps all tasks from the active tab"""
-    Tasks.query.filter(Tasks.project_id == lists_id).delete()
+    Tasks.query.filter(Tasks.project_id == lists_id).delete()  # type: ignore
     db.session.commit()
 
     return redirect("/")
