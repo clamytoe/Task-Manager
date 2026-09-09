@@ -189,6 +189,7 @@
                   <span class="{{ 'overdue' if task.is_overdue else 'due-date' }}" data-due-date="{{ task.due_date }}">
                     {{ task.due_date_display }}
                   </span>
+                  <i class="fas fa-pencil-alt edit-due-date" title="Edit Due Date"></i>
                 </td>
                 <td align="center">
                   <span class="label {% if task.priority == 'High' %}label-danger{% elif task.priority == 'Low' %}label-info{% else %}label-warning{% endif %}">

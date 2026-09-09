@@ -75,6 +75,19 @@ body {
   visibility: visible;
 }
 
+.edit-due-date {
+  margin-left: 8px;
+  color: #666;
+  cursor: pointer;
+  visibility: hidden;
+  transition: visibility 0.2s ease-in;
+}
+
+.task-row:hover .edit-due-date {
+  color: #000;
+  visibility: visible;
+}
+
 .overdue {
   color: red;
   font-weight: bold;
@@ -88,3 +101,13 @@ thead th:not(:first-child) {
   text-align: center;
   white-space: nowrap;
 }
+
+td {
+  white-space: nowrap;
+}
+
+.edit-due-date {
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
