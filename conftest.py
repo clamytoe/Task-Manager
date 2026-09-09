@@ -53,10 +53,10 @@ def create_project():
 
 @pytest.fixture
 def create_task(create_project):
-    def _create_task(task_desc="Sample Task", status=True, project=None):
+    def _create_task(task_desc="Sample Task", status=True, priority="Medium", project=None, due_date=None):
         if not project:
             project = create_project()
-        task = Tasks(project_id=project.project_id, task=task_desc, status=status)
+        task = Tasks(project_id=project.project_id, task=task_desc, status=status, priority=priority, due_date=due_date)
         db.session.add(task)
         db.session.commit()
         return task
