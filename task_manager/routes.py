@@ -1,3 +1,5 @@
+from datetime import date
+
 from flask import Blueprint, jsonify, redirect, render_template, request
 
 from task_manager import db
@@ -55,6 +57,15 @@ def add_task():
     project_id = None
     task = request.form.get("task")
     project = request.form.get("project")
+    raw_due_date = request.form.get("due_date")
+
+    if raw_due_date:
+        try:
+            due_date = date.fromisoformat(raw_due_date)
+        except ValueError:
+            due_date = None
+    else:
+        due_date = None
 
     if not task:
         return redirect("/")
@@ -89,7 +100,7 @@ def add_task():
         priority = "Medium"
 
     # add the new task
-    new_task = Tasks(project_id, task, status, priority)
+    new_task = Tasks(project_id, task, status=status, priority=priority, due_date=due_date)
     db.session.add(new_task)
     db.session.commit()
     return redirect("/")
@@ -194,6 +205,27 @@ def rename_task_desc(id):
     return "Invalid description", 400
 
 
+@routes.route("/edit_due_date/<int:id>", methods=["POST"])
+def edit_due_date(id):
+    data = request.get_json()
+    raw_due_date = data.get("due_date")
+
+    task = db.session.get(Tasks, id)
+    if not task:
+        return jsonify({"error": "Task not found"}), 404
+
+    if raw_due_date is None or raw_due_date == "":
+        task.due_date = None
+    else:
+        try:
+            task.due_date = date.fromisoformat(raw_due_date)
+        except ValueError:
+            return jsonify({"error": "Invalid date format, expected YYYY-MM-DD"}), 400
+
+    db.session.commit()
+    return "", 204
+
+
 # REST API
 
 
@@ -281,6 +313,8 @@ def api_get_tasks():
                     "task": t.task,
                     "status": t.status,
                     "priority": t.priority,
+                    "due_date": t.due_date.isoformat() if t.due_date else None,
+                    "is_overdue": t.is_overdue,
                 }
                 for t in tasks
             ]
@@ -317,6 +351,8 @@ def api_get_task(id):
                 "task": task.task,
                 "status": task.status,
                 "priority": task.priority,
+                "due_date": task.due_date.isoformat() if task.due_date else None,
+                "is_overdue": task.is_overdue,
             }
         ),
         200,
@@ -374,6 +410,9 @@ def api_create_task():
               type: boolean
             priority:
               type: string
+            due_date:
+              type: string
+              format: date
     responses:
       201:
         description: Task created
@@ -384,7 +423,22 @@ def api_create_task():
     priority = data.get("priority", "Medium")
     if priority not in {"Low", "Medium", "High"}:
         priority = "Medium"
-    task = Tasks(data["project_id"], data["task"], data.get("status", True), priority)
+    raw_due_date = data.get("due_date")
+    if raw_due_date:
+        try:
+            parsed_due = date.fromisoformat(raw_due_date)
+        except ValueError:
+            return jsonify({"error": "Invalid date format, expected YYYY-MM-DD"}), 400
+    else:
+        parsed_due = None
+
+    task = Tasks(
+        data["project_id"],
+        data["task"],
+        status=data.get("status", True),
+        priority=priority,
+        due_date=parsed_due
+    )
     db.session.add(task)
     db.session.commit()
     return jsonify({"message": "Task created", "id": task.task_id}), 201
@@ -448,6 +502,9 @@ def api_update_task(id):
               type: boolean
             priority:
               type: string
+            due_date:
+              type: string
+              format: date
     responses:
       200:
         description: Task updated
@@ -458,6 +515,17 @@ def api_update_task(id):
         return jsonify({"error": "Task not found"}), 404
     task.task = data.get("task", task.task)
     task.status = data.get("status", task.status)
+    raw_due_date = data.get("due_date")
+
+    if raw_due_date is not None:
+        if raw_due_date == "":
+            task.due_date = None
+        else:
+            try:
+                task.due_date = date.fromisoformat(raw_due_date)
+            except ValueError:
+                return jsonify({"error": "Invalid date format, expected YYYY-MM-DD"}), 400
+
     if "priority" in data and data["priority"] in {"Low", "Medium", "High"}:
         task.priority = data["priority"]
     db.session.commit()
