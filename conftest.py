@@ -10,13 +10,13 @@ from task_manager.models import Projects, Tasks
 @pytest.fixture(scope="function")
 def app():
     db_fd, db_path = tempfile.mkstemp(suffix=".sqlite3")
-    app = create_app()
-    app.config.update(
-        {
-            "TESTING": True,
-            "SQLALCHEMY_DATABASE_URI": f"sqlite:///{db_path}",
-        }
-    )
+
+    test_config = {
+        "TESTING": True,
+        "SQLALCHEMY_DATABASE_URI": f"sqlite:///{db_path}",
+    }
+
+    app = create_app(test_config)
 
     with app.app_context():
         db.create_all()
@@ -27,7 +27,6 @@ def app():
         engine = db.engine
         engine.dispose()
 
-        # Explicitly close all connections in the pool
         if hasattr(engine.pool, "dispose"):
             engine.pool.dispose()
 
