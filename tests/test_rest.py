@@ -1,7 +1,5 @@
 import json
 
-import pytest
-
 from task_manager import db
 from task_manager.models import Projects, Tasks
 
