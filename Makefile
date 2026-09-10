@@ -28,11 +28,11 @@ lockcheck:
 
 # Development server (debug + auto-reload)
 dev: lockcheck
-	uv run flask --app task_manager.app run --debug --reload
+	DATABASE_URL=sqlite:///dev.db uv run flask --app task_manager.app run --debug --reload
 
 # Production server (gunicorn)
 prod: lockcheck
-	uv run gunicorn "task_manager.wsgi:app" --config gunicorn.conf.py
+	DATABASE_URL=sqlite:///ctm.db uv run gunicorn "task_manager.wsgi:app" --config gunicorn.conf.py
 
 # Run tests
 test:
