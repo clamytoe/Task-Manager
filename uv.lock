@@ -651,12 +651,12 @@ wheels = [
 
 [[package]]
 name = "pyspark"
-version = "3.4.4"
+version = "3.5.8"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "py4j" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/46/6c/48fdd43909f6f0425b068cb676c7510694a56a323a83a696f429760f598c/pyspark-3.4.4.tar.gz", hash = "sha256:b831a99c1aeb058bc4a2498665de10006b899b2438ba15470cc88f577755ebf8", size = 311408584, upload-time = "2024-10-25T08:14:53.449Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/80/5a/3806f44eb47387e8af803508cdd6bbc0df784febf4dc010700be04a1ff89/pyspark-3.5.8.tar.gz", hash = "sha256:54cca0767b21b40e3953ad1d30f8601c53abf9cbda763653289cdcfcac52313c", size = 317817299, upload-time = "2026-01-15T11:46:14.487Z" }
 
 [[package]]
 name = "pytest"
@@ -906,7 +906,7 @@ requires-dist = [
     { name = "gunicorn", specifier = "==22.0.0" },
     { name = "jinja2", specifier = "==3.1.6" },
     { name = "markupsafe", specifier = "==3.0.2" },
-    { name = "pyspark", specifier = "==3.4.4" },
+    { name = "pyspark", specifier = "==3.5.8" },
     { name = "sqlalchemy", specifier = "==2.0.41" },
 ]
 
